@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+    <xsl:output method="html"/>
+
+    <xsl:template match="/*[local-name()='people']">
+        <html>
+            <body>
+                <table align="center" border ="1">
+                    <tr>
+                        <th>Person info</th>
+                        <th>Mother info</th>
+                        <th>Father info</th>
+                        <th>Brothers info</th>
+                        <th>Sisters info</th>
+                    </tr>
+                    <xsl:apply-templates select="person"/>
+                </table>
+            </body>
+        </html>
+    </xsl:template>
+
+    <xsl:template match="person">
+        <xsl:if test="count(./parents/*)>0 and count(id(./parents/*/@id)/parents/*)>0 and count(./siblings/*)>0">
+        <tr valign="top">
+            <td>
+                <xsl:call-template name="print_info">
+                    <xsl:with-param name="id" select="@id"/>
+                </xsl:call-template>
+            </td>
+            <td>
+                <xsl:for-each select="./parents/*">
+                    <xsl:if test="id(@id)/@gender='F'">
+                        <xsl:call-template name="print_info">
+                            <xsl:with-param name="id" select="@id"/>
+                        </xsl:call-template>
+                    </xsl:if>
+                </xsl:for-each>
+                
+            </td>
+            <td>
+                <xsl:for-each select="./parents/*">
+                    <xsl:if test="id(@id)/@gender='M'">
+                        <xsl:call-template name="print_info">
+                            <xsl:with-param name="id" select="@id"/>
+                        </xsl:call-template>
+                    </xsl:if>
+                </xsl:for-each>
+            </td>
+            <td>
+                <xsl:for-each select="./siblings/*">
+                    <xsl:if test="id(@id)/@gender='M'">
+                        <div>===========================</div>
+                        <xsl:call-template name="print_info">
+                            <xsl:with-param name="id" select="@id"/>
+                        </xsl:call-template>
+                    </xsl:if>
+                </xsl:for-each>
+            </td>
+            <td>
+                <xsl:for-each select="./siblings/*">
+                    <xsl:if test="id(@id)/@gender='F'">
+                        <div>===========================</div>
+                        <xsl:call-template name="print_info">
+                            <xsl:with-param name="id" select="@id"/>
+                        </xsl:call-template>
+                    </xsl:if>
+                </xsl:for-each>
+            </td>
+        </tr>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="print_info">
+        <xsl:param name="id"/>
+            <div>Name: <xsl:value-of select="id($id)/@name"/></div>
+            <div>Gender: <xsl:value-of select="id($id)/@gender"/></div>
+            <br/>
+            <div><u>Parents</u></div>
+            <xsl:for-each select="id($id)/parents/*">
+                <div>Name: <xsl:value-of select="id($id)/@name"/></div>
+            </xsl:for-each>
+            <br/>
+            <div><u>Grand parents</u></div>
+            <xsl:for-each select="id($id)/parents/*">
+                <xsl:for-each select="id($id)/parents/*">
+                    <div>Name: <xsl:value-of select="id($id)/@name"/></div>
+                </xsl:for-each>
+            </xsl:for-each>
+            <br/>
+            <div><u>Children</u></div>
+            <xsl:for-each select="id($id)/children/*">
+                <div>Name: <xsl:value-of select="id($id)/@name"/></div>
+            </xsl:for-each>
+            <br/>
+            <div><u>Siblings</u></div>
+            <xsl:for-each select="id($id)/siblings/*">
+                <div>Name: <xsl:value-of select="id($id)/@name"/></div>
+            </xsl:for-each>
+    </xsl:template>
+
+</xsl:stylesheet>
