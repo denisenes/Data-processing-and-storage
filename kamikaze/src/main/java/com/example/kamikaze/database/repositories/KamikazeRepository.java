@@ -25,4 +25,6 @@ public interface KamikazeRepository {
                                   Date date2) throws SQLException;
 
     String makeBooking(Route route, String passenger_name) throws SQLException;
+
+    void checkIn(String ticketNum, Integer flightId, int boarding_no, String seat_no) throws SQLException;
 }

@@ -2,6 +2,7 @@ package com.example.kamikaze.controllers;
 
 import com.example.kamikaze.database.entities.*;
 import com.example.kamikaze.database.repositories.AirportsRepository;
+import com.example.kamikaze.database.repositories.BoardingPassRepository;
 import com.example.kamikaze.database.repositories.KamikazeRepositoryImpl;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,9 @@ public class AirportsController {
     AirportsRepository airportsRepository;
     @Autowired
     KamikazeRepositoryImpl kamikazeRepositoryImpl;
+
+    @Autowired
+    BoardingPassRepository boardingPassRepository;
 
     @RequestMapping("/airports")
     public List<Airport> getAllAirports() {
@@ -55,6 +59,18 @@ public class AirportsController {
         Route route = data.getRoute();
         String pass = data.getPassenger_name();
         return kamikazeRepositoryImpl.makeBooking(route, pass);
+    }
+
+    @PostMapping(value = "/register/{ticketNum}/{flightId}")
+    public void checkIn(@PathVariable String ticketNum, @PathVariable Integer flightId) throws SQLException {
+        List<BoardingPass> passes = boardingPassRepository.findAll();
+
+        int boadringNo = 1;
+        if (passes.size() > 0)
+            boadringNo = passes.get(passes.size()-1).getBoardingNo() + 1;
+
+        kamikazeRepositoryImpl.checkIn(ticketNum, flightId, boadringNo,
+                passes.get(passes.size()-1).getSeatNo());
     }
 
     @RequestMapping("/routes")

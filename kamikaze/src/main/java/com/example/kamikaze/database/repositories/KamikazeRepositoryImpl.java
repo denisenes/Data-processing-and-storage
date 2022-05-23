@@ -207,7 +207,18 @@ public class KamikazeRepositoryImpl implements KamikazeRepository {
                     INSERT INTO ticket_flights (ticket_no, flight_id, fare_conditions, amount)
                     VALUES ('%s', %s, '%s', %s);
                     """, ticket_no, routeNode.getFlightId(), route.fare, routeNode.getPrice()));
+            System.out.println("====");
+            System.out.println(ticket_no);
+            System.out.println(routeNode.getFlightId());
         }
-        return passenger_id;
+        return ticket_no;
+    }
+
+    @Override
+    public void checkIn(String ticketNum, Integer flightId, int boarding_no, String seat_no) throws SQLException {
+        statement.executeUpdate(String.format("""
+                INSERT INTO boarding_passes (ticket_no, flight_id, boarding_no, seat_no)
+                VALUES ('%s', %s, %s, '%s')
+                """, ticketNum, flightId, boarding_no, seat_no));
     }
 }
