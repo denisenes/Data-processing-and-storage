@@ -10,4 +10,7 @@ public interface AirportsRepository extends JpaRepository<Airport, String> {
 
     @Query(value = "SELECT * FROM airports WHERE city = :city", nativeQuery = true)
     List<Airport> findAirports(@Param("city") String city);
+
+    @Query(value = "SELECT * FROM airports WHERE airport_code = :code", nativeQuery = true)
+    Airport findAirportByCode(@Param("code") String code);
 }
